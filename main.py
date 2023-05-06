@@ -56,7 +56,7 @@ async def set_finished_channel(interaction: discord.Interaction, channel: discor
     global finished_sentences_channel_id
     finished_sentences_channel_id = channel.id
     try:
-        await interaction.response.send_message(f"Finished sentences channel set to {channel.mention}", ephemeral=True)
+        await interaction.response.send_message(f"Finished sentences channel set to {channel.mention}", ephemeral=False)
         await save_config()
     except (Exception) as e:
         await interaction.response.send_message("```py\n{}: {}\n```".format(type(e).__name__, str(e)), ephemeral=True)    
@@ -84,7 +84,7 @@ async def sendhere(interaction: discord.Interaction):
 @bot.event
 async def on_message(message):
     global last_message_ended_with_dot, sentence, sentence_authors, sentence_counter
-    
+
     if message.author.bot:
         return
 
@@ -95,21 +95,40 @@ async def on_message(message):
         await message.add_reaction('❌')
         return
     
-    if sentence_authors and sentence_authors[-1] == message.author and not last_message_ended_with_dot and not message.content.startswith('.'):
+    if sentence_authors and sentence_authors[-1] == message.author and not last_message_ended_with_dot:
         await message.add_reaction('❌')
+        return
+    
+    if sentence_authors and sentence_authors[-1] != message.author and message.content == '.':
+        sentence.append(message.content)
+        sentence_authors.append(message.author)
+        if message.content.endswith('.'):
+            sentence_str = ' '.join(sentence)
+            if sentence_str.endswith(' .'): 
+                sentence_str = sentence_str[:-2] + '.' 
+            sentence_channel = bot.get_channel(finished_sentences_channel_id)
+            sentence_counter += 1
+            sentence_authors_str = ', '.join(user.mention for user in set(sentence_authors))
+            await sentence_channel.send(f"> {sentence_str}\nWritten by: {sentence_authors_str} #{sentence_counter}")
+            sentence_authors.clear()
+            sentence = []
+            last_message_ended_with_dot = True
+            await message.add_reaction('✅')
+        
+            with open('sentence_counter.json', 'w') as f:
+                json.dump(sentence_counter, f)
+            return
+
+        await message.add_reaction('✅')
         return
     
     if message.content.startswith('.'):
         await message.add_reaction('❌')
         return
     
+    sentence.append(message.content)
+    sentence_authors.append(message.author)
     if message.content.endswith('.'):
-        if sentence_authors and sentence_authors[-1] == message.author:
-            await message.add_reaction('❌')
-            return
-        
-        sentence.append(message.content)
-        sentence_authors.append(message.author)
         sentence_str = ' '.join(sentence)
         if sentence_str.endswith(' .'): 
             sentence_str = sentence_str[:-2] + '.' 
@@ -124,8 +143,9 @@ async def on_message(message):
         
         with open('sentence_counter.json', 'w') as f:
             json.dump(sentence_counter, f)
-    elif message.content.startswith('.'):
-        await message
+        return
+
+    await message.add_reaction('✅')
 
 
 bot.run("TOKEN")
