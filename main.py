@@ -17,7 +17,7 @@ sentence_counter = 0
 @bot.event
 async def on_ready():
 	await load_config()
-	await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="/help"))
+	await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="you"))
 	print("Online")
 	try:
 		synced = await bot.tree.sync()
@@ -31,6 +31,7 @@ try:
         sentence_counter = json.load(f)
 except FileNotFoundError:
     pass
+
 
 async def load_config():
     global finished_sentences_channel_id, sentence_builder_channel_id
@@ -71,6 +72,14 @@ async def set_builder_channel(interaction: discord.Interaction, channel: discord
     except (Exception) as e:
         await interaction.response.send_message("```py\n{}: {}\n```".format(type(e).__name__, str(e)), ephemeral=True)
 
+@bot.tree.command(name="help", description="Helpful information about the bot.")
+async def sendhere(interaction: discord.Interaction):
+	embed=discord.Embed(title="Github Repository", url="https://github.com/Wanrell/Sentence-Builder")
+	embed.set_author(name="Sentence Builder Help")
+	embed.add_field(name="Setup", value="Setup is fast and easy. Just use the /set_builder_channel command and select a channel where you'd like to build sentences with other users. After this you can use the /set_finished_channel command and select a channel where you'd like the finished works of art to be posted in.", inline=False)
+	embed.add_field(name="Want to discuss issues, ideas, feedback?", value="You can reach out to our staff team through a ticket or ping one of our developers here. We'll be always ready to help when issues arise or the bot needs some work. You can also reach out if you have any new ideas you'd like to tell us about!", inline=True)
+	embed.set_footer(text="- Rencord Developer Team", icon_url = "https://cdn.discordapp.com/icons/988166577960648755/f52c05212ccc4f801d9b6853fd8129e0.webp?size=96")
+	await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @bot.event
 async def on_message(message):
@@ -121,3 +130,4 @@ async def on_message(message):
 
 
 bot.run("TOKEN")
+
