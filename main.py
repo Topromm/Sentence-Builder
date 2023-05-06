@@ -122,7 +122,6 @@ async def on_message(message):
         last_message_ended_with_dot = True
         await message.add_reaction('✅')
         
-        # Save the updated sentence counter to the JSON file
         with open('sentence_counter.json', 'w') as f:
             json.dump(sentence_counter, f)
     elif message.content.startswith('.'):
