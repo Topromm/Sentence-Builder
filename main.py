@@ -73,11 +73,11 @@ async def set_builder_channel(interaction: discord.Interaction, channel: discord
 
 @bot.tree.command(name="help", description="Helpful information about the bot.")
 async def sendhere(interaction: discord.Interaction):
-	embed=discord.Embed(title="Github Repository", url="https://github.com/Wanrell/Sentence-Builder")
+	embed=discord.Embed(title="Github Repository", url="https://github.com/Topromm/Sentence-Builder")
 	embed.set_author(name="Sentence Builder Help")
 	embed.add_field(name="Setup", value="Setup is fast and easy. Just use the /set_builder_channel command and select a channel where you'd like to build sentences with other users. After this you can use the /set_finished_channel command and select a channel where you'd like the finished works of art to be posted in.", inline=False)
-	embed.add_field(name="Want to discuss issues, ideas, feedback?", value="You can reach out to our staff team through a ticket or ping one of our developers here. We'll be always ready to help when issues arise or the bot needs some work. You can also reach out if you have any new ideas you'd like to tell us about!", inline=True)
-	embed.set_footer(text="- Developer Team", icon_url = "https://cdn.discordapp.com/icons/988166577960648755/f52c05212ccc4f801d9b6853fd8129e0.webp?size=96")
+	embed.add_field(name="Want to discuss issues, ideas, feedback?", value="You can reach me on Github through the \"Github Repository\" hyperlink above. We'll always be ready to help when issues arise, but you can also reach out if you have any new ideas you'd like to tell us about!", inline=True)
+	embed.set_footer(text="- Developer Team", icon_url = "https://cdn-icons-png.freepik.com/512/5338/5338322.png")
 	await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @bot.event
