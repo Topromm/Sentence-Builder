@@ -1,8 +1,4 @@
 # Sentence-Builder
-
-A lightweight sentence building game written for Discord using Python!
-
-## What does it do?
 Sentence Builder is used for collaborative sentence writing in a designated chat/channel. The Bot has several features to help ensure that the sentences are written correctly and to prevent spamming.
 
 How it all works:
